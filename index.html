@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle Mensal 2025</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Controle de Despesas</h1>
+
+  <!-- Resumo -->
+  <div id="summary">
+    <div>Entradas: <span id="income">R$ 0,00</span></div>
+    <div>Saídas: <span id="expense">R$ 0,00</span></div>
+    <div>Saldo: <span id="balance">R$ 0,00</span></div>
+  </div>
+
+  <!-- Seleção de Mês -->
+  <div id="month-selector">
+    <label for="month">Selecione o mês:</label>
+    <select id="month">
+      <option value="janeiro">Janeiro</option>
+      <option value="fevereiro">Fevereiro</option>
+      <option value="março">Março</option>
+      <option value="abril">Abril</option>
+      <option value="maio">Maio</option>
+      <option value="junho">Junho</option>
+      <option value="julho">Julho</option>
+      <option value="agosto">Agosto</option>
+      <option value="setembro">Setembro</option>
+      <option value="outubro">Outubro</option>
+      <option value="novembro">Novembro</option>
+      <option value="dezembro">Dezembro</option>
+    </select>
+  </div>
+
+  <!-- Formulário -->
+  <div id="form">
+    <input type="text" id="description" placeholder="Descrição" />
+    <input type="number" id="amount" placeholder="Valor" />
+    <input type="date" id="dueDate" />
+    <select id="type">
+      <option value="entrada">Entrada</option>
+      <option value="saida">Saída</option>
+    </select>
+    <button id="add-transaction-btn">Adicionar Transação</button>
+  </div>
+
+  <!-- Lista de Transações -->
+  <table>
+    <thead>
+      <tr>
+        <th>Descrição</th>
+        <th>Valor</th>
+        <th>Data</th>
+        <th>Tipo</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="transaction-list"></tbody>
+  </table>
+
+  <script src="script.js"></script>
+</body>
+</html>

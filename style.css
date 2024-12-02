@@ -1,0 +1,88 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background-color: #f4f4f4;
+}
+
+h1 {
+  text-align: center;
+}
+
+#summary {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+  font-size: 18px;
+}
+
+#month-selector {
+  margin: 10px 0;
+}
+
+#form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#form input,
+#form select,
+#form button {
+  padding: 10px;
+  font-size: 16px;
+}
+
+#form button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#form button:hover {
+  background-color: #218838;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+thead {
+  background-color: #007bff;
+  color: white;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.paid-btn {
+  background-color: #ffc107;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.paid-btn:hover {
+  background-color: #e0a800;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+.status {
+  font-weight: bold;
+}
