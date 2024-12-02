@@ -12,7 +12,7 @@ function formatDate(date) {
 }
 
 // Variáveis para armazenar dados
-let transactions = JSON.parse(localStorage.getItem('transactions')) || []; // Recupera as transações do Local Storage
+let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 let totalIncome = 0;
 let totalExpense = 0;
 
@@ -34,17 +34,14 @@ function saveToLocalStorage() {
 function filterByMonth() {
   const selectedMonth = document.getElementById('month').value;
 
-  // Limpa a tabela antes de atualizar
   const transactionList = document.getElementById('transaction-list');
   transactionList.innerHTML = '';
 
-  // Filtra e exibe as transações do mês selecionado
   const filteredTransactions = transactions.filter((transaction) => {
       const transactionMonth = new Date(transaction.date).toLocaleString('pt-BR', { month: 'long' });
       return transactionMonth.toLowerCase() === selectedMonth.toLowerCase();
   });
 
-  // Recalcula os totais
   totalIncome = 0;
   totalExpense = 0;
 
@@ -60,56 +57,57 @@ function filterByMonth() {
   updateSummary();
 }
 
-// Adiciona uma nova transação
+// Adiciona uma nova transação (normal ou parcelada)
 function addTransaction() {
   const description = document.getElementById('description').value.trim();
   const amount = parseFloat(document.getElementById('amount').value);
   const dueDate = document.getElementById('dueDate').value;
   const type = document.getElementById('type').value;
+  const installments = parseInt(document.getElementById('installments').value);
 
-  // Valida os campos do formulário
-  if (!description || isNaN(amount) || amount <= 0 || !dueDate) {
+  if (!description || isNaN(amount) || amount <= 0 || !dueDate || isNaN(installments) || installments <= 0) {
       alert('Por favor, preencha todos os campos corretamente!');
       return;
   }
 
-  // Cria o objeto da transação
-  const transaction = {
-      id: Date.now(), // ID único para identificar transações
-      description,
-      amount,
-      date: dueDate,
-      type,
-      status: 'Aberto',
-  };
+  const installmentAmount = amount / installments;
 
-  // Adiciona a transação à lista
-  transactions.push(transaction);
+  for (let i = 0; i < installments; i++) {
+      const transactionDate = new Date(dueDate);
+      transactionDate.setMonth(transactionDate.getMonth() + i);
 
-  // Atualiza os totais globais
-  if (type === 'entrada') {
-      totalIncome += amount;
-  } else {
-      totalExpense += amount;
-  }
+      const transaction = {
+          id: Date.now() + i,
+          description: `${description} (Parcela ${i + 1}/${installments})`,
+          amount: parseFloat(installmentAmount.toFixed(2)),
+          date: transactionDate.toISOString(),
+          type,
+          status: 'Aberto',
+      };
 
-  // Verifica se a transação pertence ao mês atualmente selecionado
-  const selectedMonth = document.getElementById('month').value;
-  const transactionMonth = new Date(transaction.date).toLocaleString('pt-BR', { month: 'long' });
+      transactions.push(transaction);
 
-  if (transactionMonth.toLowerCase() === selectedMonth.toLowerCase()) {
-      addTransactionToTable(transaction);
+      const selectedMonth = document.getElementById('month').value;
+      const transactionMonth = transactionDate.toLocaleString('pt-BR', { month: 'long' });
+
+      if (transactionMonth.toLowerCase() === selectedMonth.toLowerCase()) {
+          addTransactionToTable(transaction);
+      }
+
+      if (type === 'entrada') {
+          totalIncome += transaction.amount;
+      } else {
+          totalExpense += transaction.amount;
+      }
   }
 
   updateSummary();
-
-  // Salva no Local Storage
   saveToLocalStorage();
 
-  // Limpa os campos do formulário
   document.getElementById('description').value = '';
   document.getElementById('amount').value = '';
   document.getElementById('dueDate').value = '';
+  document.getElementById('installments').value = '1';
 }
 
 // Adiciona uma transação na tabela
@@ -128,7 +126,7 @@ function addTransactionToTable(transaction) {
           <button class="delete-btn">Excluir</button>
       </td>
   `;
-  newRow.dataset.id = transaction.id; // Adiciona o ID como atributo de dados
+  newRow.dataset.id = transaction.id;
 
   transactionList.appendChild(newRow);
 }
@@ -140,7 +138,6 @@ function markAsPaid(event) {
       const statusCell = row.querySelector('.status');
       const transactionId = row.dataset.id;
 
-      // Encontra a transação correspondente no array
       const transaction = transactions.find((t) => t.id == transactionId);
 
       if (transaction) {
@@ -154,7 +151,6 @@ function markAsPaid(event) {
               statusCell.style.color = '';
           }
 
-          // Salva no Local Storage
           saveToLocalStorage();
       }
   }
@@ -166,10 +162,8 @@ function deleteTransaction(event) {
       const row = event.target.closest('tr');
       const transactionId = row.dataset.id;
 
-      // Remove a transação do array global
       transactions = transactions.filter((transaction) => transaction.id != transactionId);
 
-      // Atualiza os totais globais
       const amount = parseFloat(
           row.cells[1].textContent.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.')
       );
@@ -183,22 +177,18 @@ function deleteTransaction(event) {
 
       row.remove();
       updateSummary();
-
-      // Salva no Local Storage
       saveToLocalStorage();
   }
 }
 
 // Inicializa a aplicação
 function initialize() {
-  // Recupera transações salvas e exibe as do mês atual
   const currentMonth = new Date().toLocaleString('pt-BR', { month: 'long' }).toLowerCase();
   document.getElementById('month').value = currentMonth;
 
   filterByMonth();
 }
 
-// Eventos
 document.getElementById('add-transaction-btn').addEventListener('click', addTransaction);
 document.getElementById('month').addEventListener('change', filterByMonth);
 document.getElementById('transaction-list').addEventListener('click', function (event) {
@@ -206,5 +196,4 @@ document.getElementById('transaction-list').addEventListener('click', function (
   deleteTransaction(event);
 });
 
-// Inicializa a aplicação
 initialize();
